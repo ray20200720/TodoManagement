@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo Management</title>
+    <!-- 要在頁面刷新或關閉時延遲一段時間，以確保下載能夠執行。 -->
+    <style>
+      body {
+	  background-color: lightblue;
+      }
+      table, th, td {
+          border: 1px solid black;
+          border-collapse: collapse;
+          padding: 8px;
+      }
+      th {
+          cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>TO-DO LIST</h1>
+
+    <h2>TASK LIST</h2>
+    <button onclick="downloadJSON()">下載 JSON</button>
+    <input type="file" id="uploadJSON" accept=".json" onchange="uploadJSON()">
+    <br><br>
+    
+    <table id="todolistTable">
+      <thead>
+	<tr>
+          <th onclick="sortTable(0)">Category</th>	  
+          <th onclick="sortTable(1)">Description</th>
+          <th onclick="sortTable(2)">Due Date</th>
+          <th onclick="sortTable(3)">Priority</th>
+          <th onclick="sortTable(4)">Status</th>
+          <th>Operation</th>
+	</tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+
+    <h2>NEW TASK</h2>
+    <form id="todolistForm">
+      <label for="category">Category:</label>
+      <select id="category" name="category" required>
+        <option value="Work">Work</option>
+        <option value="Family">Family</option>
+        <option value="Personal">Personal</option>
+        <option value="Other">Other</option>
+      </select><br><br>
+      
+      <label for="description">Description:</label>
+      <input type="text" id="description" name="description" required><br><br>
+      
+      <label for="date">Due Date:</label>
+      <input type="date" id="date" name="date" required><br><br>
+
+      <label for="priority">Priority:</label>
+      <select id="priority" name="priority" required>
+	<option value="High">High</option>
+	<option value="Medium">Medium</option>
+	<option value="Low">Low</option>
+      </select><br><br>
+      
+      <label for="status">Status:</label>
+      <select id="status" name="status" required>
+	<option value="TODO" selected>TODO</option>
+	<option value="DONE">DONE</option>
+	<option value="Pending">Pending</option>
+      </select><br><br>
+
+      
+      <button type="button" onclick="addTODO()">add Task</button>
+    </form>
+
+    <br>
+
+    <script>
+      document.getElementById('date').valueAsDate = new Date();
+
+      function addTODO() {
+	  const category = document.getElementById('category').value;
+          const description = document.getElementById('description').value;
+          const date = document.getElementById('date').value;
+          const priority = document.getElementById('priority').value;
+          const status = document.getElementById('status').value;
+
+
+          if (category && description && date && priority && status) {
+              const table = document.getElementById('todolistTable').getElementsByTagName('tbody')[0];
+              const newRow = table.insertRow();
+
+              const cell1 = newRow.insertCell(0);
+              const cell2 = newRow.insertCell(1);
+              const cell3 = newRow.insertCell(2);
+              const cell4 = newRow.insertCell(3);
+              const cell5 = newRow.insertCell(4);
+	      const cell6 = newRow.insertCell(5);
+	      
+              cell1.textContent = category; 
+              cell2.textContent = description;
+              cell3.textContent = date;
+	      cell4.textContent = priority;
+	      cell5.textContent = status;
+              cell6.innerHTML = '<button onclick="deleteRow(this)">Delete</button>';
+
+              newRow.addEventListener('dblclick', editCell);
+
+              document.getElementById('todolistForm').reset();
+              document.getElementById('date').valueAsDate = new Date();
+          } else {
+              alert('All fileds are required');
+          }
+      }
+
+      function deleteRow(button) {
+          const row = button.parentNode.parentNode;
+          row.parentNode.removeChild(row);
+      }
+
+      function editCell(event) {
+          const cell = event.target;
+          const originalContent = cell.textContent;
+          const input = document.createElement('input');
+          input.type = 'text';
+          input.value = originalContent;
+          input.style.width = '100%';
+
+          input.addEventListener('blur', () => {
+              cell.textContent = input.value;
+          });
+
+          input.addEventListener('keydown', (e) => {
+              if (e.key === 'Enter') {
+                  cell.textContent = input.value;
+              }
+          });
+
+          cell.textContent = '';
+          cell.appendChild(input);
+          input.focus();
+      }
+
+      function downloadJSON() {
+          const table = document.getElementById('todolistTable').getElementsByTagName('tbody')[0];
+          const rows = table.getElementsByTagName('tr');
+          const data = [];
+
+          for (let i = 0; i < rows.length; i++) {
+              const cells = rows[i].getElementsByTagName('td');
+              const rowData = {
+		  category: cells[0].textContent,
+                  description: cells[1].textContent,
+                  date: cells[2].textContent,
+                  priority: cells[3].textContent,
+		  status: cells[4].textContent
+              };
+              data.push(rowData);
+          }
+
+          const json = JSON.stringify(data, null, 2);
+          const blob = new Blob([json], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'todolist.json';
+          a.click();
+          URL.revokeObjectURL(url);
+      }
+
+      function uploadJSON() {
+          const fileInput = document.getElementById('uploadJSON');
+          const file = fileInput.files[0];
+          const reader = new FileReader();
+
+          reader.onload = function(event) {
+              const json = event.target.result;
+              const data = JSON.parse(json);
+              const table = document.getElementById('todolistTable').getElementsByTagName('tbody')[0];
+
+              data.forEach(rowData => {
+                  const newRow = table.insertRow();
+
+                  const cell1 = newRow.insertCell(0);
+                  const cell2 = newRow.insertCell(1);
+                  const cell3 = newRow.insertCell(2);
+                  const cell4 = newRow.insertCell(3);
+                  const cell5 = newRow.insertCell(4);
+                  const cell6 = newRow.insertCell(5);
+		  
+		  cell1.textContent = rowData.category;
+                  cell2.textContent = rowData.description;
+                  cell3.textContent = rowData.date;
+                  cell4.textContent = rowData.priority;
+		  cell5.textContent = rowData.status;
+                  cell6.innerHTML = '<button onclick="deleteRow(this)">Delete</button>';
+
+                  newRow.addEventListener('dblclick', editCell);
+              });
+          };
+
+          reader.readAsText(file);
+      }
+
+      function sortTable(columnIndex) {
+          const table = document.getElementById('todolistTable');
+          const rows = Array.from(table.rows).slice(1);
+          const isAscending = table.getAttribute('data-sort-asc') === 'true';
+          const direction = isAscending ? 1 : -1;
+
+          rows.sort((rowA, rowB) => {
+              const cellA = rowA.cells[columnIndex].textContent;
+              const cellB = rowB.cells[columnIndex].textContent;
+
+              if (cellA < cellB) return -1 * direction;
+              if (cellA > cellB) return 1 * direction;
+              return 0;
+          });
+
+          rows.forEach(row => table.appendChild(row));
+          table.setAttribute('data-sort-asc', !isAscending);
+      }
+
+      function saveTableData() {
+          const table = document.getElementById('todolistTable').getElementsByTagName('tbody')[0];
+          const rows = table.getElementsByTagName('tr');
+          const data = [];
+
+          for (let i = 0; i < rows.length; i++) {
+              const cells = rows[i].getElementsByTagName('td');
+              const rowData = {
+		  category: cells[0].textContent,
+                  description: cells[1].textContent,
+                  date: cells[2].textContent,
+                  priority: cells[3].textContent,
+		  status: cells[4].textContent
+              };
+              data.push(rowData);
+          }
+
+          const json = JSON.stringify(data, null, 2);
+          const blob = new Blob([json], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'todolist.json';
+          a.click();
+          URL.revokeObjectURL(url);
+      }
+
+      window.addEventListener('beforeunload', (event) => {
+          event.preventDefault();
+          saveTableData();
+          setTimeout(() => {
+              event.returnValue = '';
+          }, 1000); // 延遲1秒
+      });
+
+      document.querySelectorAll('#todolistTable tbody tr').forEach(row => {
+          row.addEventListener('dblclick', editCell);
+      });
+      </script>
+  </body>
+</html>
