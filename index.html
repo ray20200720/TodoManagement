@@ -4,80 +4,102 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Todo Management</title>
-    <!-- 要在頁面刷新或關閉時延遲一段時間，以確保下載能夠執行。 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
     <style>
-      body {
-	  background-color: lightblue;
+
+      h1 {
+	  padding: 0.01em 0.5em;
+	  color: DarkSlateGray;
       }
+      
+      body {
+	  font-family: "JetBrains Mono", Georgia, serif;
+	  /* background-color: lightblue; */
+	  background: rgba(0, 128, 0, 0.5)
+      }
+      
       table, th, td {
           border: 1px solid black;
           border-collapse: collapse;
           padding: 8px;
       }
+      
       th {
           cursor: pointer;
+	  background-color: Aquamarine;
+      }
+
+      div {
+	  border: 1px solid black;
+	  margin: 25px;
+	  padding: 1em;
+	  background-color: lightblue;
       }
     </style>
   </head>
   <body>
     <h1>TO-DO LIST</h1>
-
-    <h2>TASK LIST</h2>
-    <button onclick="downloadJSON()">下載 JSON</button>
-    <input type="file" id="uploadJSON" accept=".json" onchange="uploadJSON()">
-    <br><br>
     
-    <table id="todolistTable">
-      <thead>
-	<tr>
-          <th onclick="sortTable(0)">Category</th>	  
-          <th onclick="sortTable(1)">Description</th>
-          <th onclick="sortTable(2)">Due Date</th>
-          <th onclick="sortTable(3)">Priority</th>
-          <th onclick="sortTable(4)">Status</th>
-          <th>Operation</th>
-	</tr>
-      </thead>
-      <tbody>
-      </tbody>
-    </table>
-
-    <h2>NEW TASK</h2>
-    <form id="todolistForm">
-      <label for="category">Category:</label>
-      <select id="category" name="category" required>
-        <option value="Work">Work</option>
-        <option value="Family">Family</option>
-        <option value="Personal">Personal</option>
-        <option value="Other">Other</option>
-      </select><br><br>
+    <div>
+      <h2>TASK LIST</h2>
+      <button onclick="downloadJSON()">下載 JSON</button>
+      <input type="file" id="uploadJSON" accept=".json" onchange="uploadJSON()">
+      <br><br>
       
-      <label for="description">Description:</label>
-      <input type="text" id="description" name="description" required><br><br>
-      
-      <label for="date">Due Date:</label>
-      <input type="date" id="date" name="date" required><br><br>
+      <table id="todolistTable">
+	<thead>
+	  <tr>
+            <th onclick="sortTable(0)">Category</th>	  
+            <th onclick="sortTable(1)">Description</th>
+            <th onclick="sortTable(2)">Due Date</th>
+            <th onclick="sortTable(3)">Priority</th>
+            <th onclick="sortTable(4)">Status</th>
+            <th>Operation</th>
+	  </tr>
+	</thead>
+	<tbody>
+	</tbody>
+      </table>
+    </div>
 
-      <label for="priority">Priority:</label>
-      <select id="priority" name="priority" required>
-	<option value="High">High</option>
-	<option value="Medium">Medium</option>
-	<option value="Low">Low</option>
-      </select><br><br>
-      
-      <label for="status">Status:</label>
-      <select id="status" name="status" required>
-	<option value="TODO" selected>TODO</option>
-	<option value="DONE">DONE</option>
-	<option value="Pending">Pending</option>
-      </select><br><br>
+    <div>
+      <h2>NEW TASK</h2>
 
-      
-      <button type="button" onclick="addTODO()">add Task</button>
-    </form>
+      <form id="todolistForm">
+	<label for="category">Category:</label>
+	<select id="category" name="category" required>
+          <option value="Work">Work</option>
+          <option value="Family">Family</option>
+          <option value="Personal">Personal</option>
+          <option value="Other">Other</option>
+	</select><br><br>
+	
+	<label for="description">Description:</label>
+	<input type="text" id="description" name="description" required><br><br>
+	
+	<label for="date">Due Date:</label>
+	<input type="date" id="date" name="date" required><br><br>
 
-    <br>
+	<label for="priority">Priority:</label>
+	<select id="priority" name="priority" required>
+	  <option value="High">High</option>
+	  <option value="Medium">Medium</option>
+	  <option value="Low">Low</option>
+	</select><br><br>
+	
+	<label for="status">Status:</label>
+	<select id="status" name="status" required>
+	  <option value="TODO" selected>TODO</option>
+	  <option value="DONE">DONE</option>
+	  <option value="Pending">Pending</option>
+	</select><br><br>
 
+	
+	<button type="button" onclick="addTODO()">add Task</button>
+      </form>
+    </div>
     <script>
       document.getElementById('date').valueAsDate = new Date();
 
