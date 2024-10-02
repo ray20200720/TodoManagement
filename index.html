@@ -10,8 +10,12 @@
     <style>
 
       h1 {
-	  padding: 0.01em 0.5em;
+	  padding: 0.1em 0.8em;
 	  color: DarkSlateGray;
+      }
+
+      h2 {
+	  text-decoration: underline;
       }
       
       body {
@@ -37,6 +41,20 @@
 	  padding: 1em;
 	  background-color: lightblue;
       }
+
+      .file-upload {
+	  display: none;
+      }
+
+      .upload-label, .download-label, .add-task {
+	  display: inline-block;
+	  padding: 10px 20px;
+          background-color: #007bff;
+          color: white;
+          cursor: pointer;
+          border-radius: 5px;
+      }
+
     </style>
   </head>
   <body>
@@ -44,8 +62,11 @@
     
     <div>
       <h2>TASK LIST</h2>
-      <button onclick="downloadJSON()">下載 JSON</button>
-      <input type="file" id="uploadJSON" accept=".json" onchange="uploadJSON()">
+      
+      <label class="download-label" onclick="downloadJSON()">Download JSON</label>
+
+      <label for="uploadJSON" class="upload-label">Upload JSON</label>
+      <input type="file" id="uploadJSON" class="file-upload" accept=".json" onchange="uploadJSON()">
       <br><br>
       
       <table id="todolistTable">
@@ -71,6 +92,8 @@
 	<label for="category">Category:</label>
 	<select id="category" name="category" required>
           <option value="Work">Work</option>
+	  <option value="Home">Home</option>
+	  <option value="School">School</option>
           <option value="Family">Family</option>
           <option value="Personal">Personal</option>
           <option value="Other">Other</option>
@@ -96,8 +119,8 @@
 	  <option value="Pending">Pending</option>
 	</select><br><br>
 
-	
-	<button type="button" onclick="addTODO()">add Task</button>
+	<!-- <button type="button" onclick="addTODO()">add Task</button> -->
+	<label class="add-task" onclick="addTODO()">Add Task</lable>
       </form>
     </div>
     <script>
@@ -278,7 +301,7 @@
           saveTableData();
           setTimeout(() => {
               event.returnValue = '';
-          }, 1000); // 延遲1秒
+          }, 1000); // delay 1 second
       });
 
       document.querySelectorAll('#todolistTable tbody tr').forEach(row => {
