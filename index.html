@@ -35,7 +35,7 @@
 	  background-color: Aquamarine;
       }
 
-      div {
+      .my-div {
 	  border: 1px solid black;
 	  margin: 25px;
 	  padding: 1em;
@@ -60,7 +60,7 @@
   <body>
     <h1>TO-DO LIST</h1>
     
-    <div>
+    <div class="my-div">
       <h2>TASK LIST</h2>
       
       <label class="download-label" onclick="downloadJSON()">Download JSON</label>
@@ -70,24 +70,24 @@
       <br><br>
 
       <div style="height: 200px; overflow-y: scroll;"> 
-      <table id="todolistTable">
-	<thead>
-	  <tr>
-            <th onclick="sortTable(0)">Category</th>	  
-            <th onclick="sortTable(1)">Description</th>
-            <th onclick="sortTable(2)">Due Date</th>
-            <th onclick="sortTable(3)">Priority</th>
-            <th onclick="sortTable(4)">Status</th>
-            <th>Operation</th>
-	  </tr>
-	</thead>
-	<tbody>
-	</tbody>
-      </table>
+	<table id="todolistTable">
+	  <thead>
+	    <tr>
+              <th onclick="sortTable(0)">Category</th>	  
+              <th onclick="sortTable(1)">Description</th>
+              <th onclick="sortTable(2)">Due Date</th>
+              <th onclick="sortTable(3)">Priority</th>
+              <th onclick="sortTable(4)">Status</th>
+              <th>Operation</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	  </tbody>
+	</table>
       </div>
     </div>
 
-    <div>
+    <div class="my-div">
       <h2>NEW TASK</h2>
 
       <form id="todolistForm">
@@ -159,7 +159,7 @@
               document.getElementById('todolistForm').reset();
               document.getElementById('date').valueAsDate = new Date();
           } else {
-              alert('All fileds are required');
+              alert('All fields are required');
           }
       }
 
